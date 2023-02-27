@@ -12,6 +12,7 @@
   --bg-color-main: #ffffff; /*white*/
   --bg-color-light-primary: #f4f4fd; /*cloud*/
   --bg-color-light-secondary: #e7e9fc; /*cornflower*/
+  --bg-color-modal: #fcfcfc;
   --bg-color-dark: #2e2f42; /*navy blue*/
   --bg-color-accent: #4d5ae5; /*Iris*/
   --bg-color-hover: #404bbf; /*ocean*/
@@ -92,21 +93,37 @@ h6 {
 }
 
 .site-nav .link {
+  position: relative;
   display: block;
-  padding-top: 24px;
-  padding-bottom: 24px;
+  padding: 24px 0px;
 
   color: var(--title-color-primary);
   font-weight: 500;
   font-size: 16px;
   line-height: 1.5;
   text-decoration: none;
+
+  transition-property: color;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.site-nav .link.current::after {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+
+  content: "";
+  width: 100%;
+  height: 4px;
+
+  background-color: currentColor;
+  border-radius: 2px;
+}
+
 .site-nav .link:focus,
 .site-nav .link:hover {
   color: var(--text-color-hover);
-  text-decoration-line: underline;
-  text-underline-offset: 24px;
 }
 
 .site-nav .link.current {
@@ -166,10 +183,15 @@ h6 {
   font-weight: 500;
   font-size: 16px;
   line-height: 1.5;
+
+  transition-property: background-color;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .order-button:hover,
 .order-button:focus {
+  background-color: var(--bg-color-hover);
   cursor: pointer;
 }
 
@@ -271,6 +293,10 @@ h6 {
   background-color: var(--bg-color-accent);
   border-radius: 50%;
   fill: var(--bg-color-light-primary);
+
+  transition-property: background-color;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .social-icon {
@@ -311,6 +337,10 @@ h6 {
   border: 1px solid var(--bg-color-inactive);
   border-radius: 4px;
   fill: var(--bg-color-inactive);
+
+  transition-property: fill, border-color;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .customers-link:hover,
@@ -365,6 +395,10 @@ h6 {
 .social-link.inverted {
   background-color: rgba(255, 255, 255, 0.1);
   fill: var(--logo-color-light);
+
+  transition-property: background-color;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .social-media .social-icon {
@@ -403,6 +437,10 @@ h6 {
   font-weight: 500;
   font-size: 16px;
   line-height: 1.5;
+
+  transition-property: background-color, border-color, color;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 .filters .button:focus,
 .filters .button:hover {
@@ -410,7 +448,6 @@ h6 {
   border-color: var(--bg-color-hover);
   box-shadow: 0px 3px 1px rgba(0, 0, 0, 0.1), 0px 2px 1px rgba(0, 0, 0, 0.08),
     0px 2px 2px rgba(0, 0, 0, 0.12);
-  border-radius: 4px;
   color: var(--title-color-inverted);
   cursor: pointer;
 }
@@ -437,8 +474,36 @@ h6 {
   text-decoration: none;
 }
 
-.portfolio-item .image {
+.card-thumb {
+  position: relative;
+  overflow: hidden;
+}
+
+.portfolio-image {
+  display: block;
+  width: 100%;
   border-color: transparent;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: translateY(100%);
+
+  padding: 32px 40px;
+  margin-bottom: 0;
+
+  color: var(--logo-color-light);
+  background-color: var(--bg-color-accent);
+
+  opacity: 0;
+
+  transition-property: opacity, transform;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .portfolio-item .card-label {
@@ -446,6 +511,74 @@ h6 {
 }
 
 .portfolio-link:hover {
+  opacity: 1;
   box-shadow: 0px 1px 6px rgba(46, 47, 66, 0.08),
     0px 1px 1px rgba(46, 47, 66, 0.16), 0px 2px 1px rgba(46, 47, 66, 0.08);
+}
+
+.portfolio-link:hover .overlay {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 20px 0px;
+  background-color: rgba(46, 47, 66, 0.4);
+
+  transition-property: transform, opasity visibility;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.backdrop.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transform: scale(1.25);
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  max-width: 408px;
+  max-height: 576px;
+  border-radius: 4px;
+  background-color: var(--bg-color-modal);
+  overflow: auto;
+}
+
+.modal-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+
+  width: 24px;
+  height: 24px;
+  background-color: var(--bg-color-light-secondary);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+}
+
+.modal-close:hover {
+  background-color: var(--bg-color-hover);
+  border-color: var(--bg-color-hover);
+  fill: var(--title-color-inverted);
+  cursor: pointer;
+}
+
+.modal-icon {
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin: auto;
 }
